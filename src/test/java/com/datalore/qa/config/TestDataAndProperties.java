@@ -6,8 +6,12 @@ import org.aeonbits.owner.Config;
 @Config.Sources({"system:env",
         "system:properties",
         "classpath:application.properties",
-        "classpath:testdata.properties"}) // sensitive - DO NOT put into Git/VCS.
+        "classpath:sensitive.properties"}) // sensitive - DO NOT put into Git/VCS.
 public interface TestDataAndProperties extends Config {
+
+    int implicitlyWait();
+    int pageLoadTimeout();
+    int waitTimeout();
 
     String basePath();
     String authPath();
