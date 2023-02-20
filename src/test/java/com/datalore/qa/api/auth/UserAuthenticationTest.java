@@ -56,4 +56,32 @@ public class UserAuthenticationTest extends TestBase {
                 .body(containsString("INCORRECT"));
     }
 
+    @Test
+    public void loginWithoutEmail() {
+        given()
+                .contentType(ContentType.JSON)
+                .with()
+                .body(getEmailPayload(getData().userEmail()))
+                .when()
+                .post(getData().authPath())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+
+    @Test
+    public void loginWithoutPassword() {
+        given()
+                .contentType(ContentType.JSON)
+                .with()
+                .body(getPasswordPayload(getData().userPassword()))
+                .when()
+                .post(getData().authPath())
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+
 }

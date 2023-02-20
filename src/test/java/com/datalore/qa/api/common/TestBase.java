@@ -34,4 +34,12 @@ public abstract class TestBase {
     public String getAuthPayload(String email, String password) {
         return "{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}";
     }
+
+    public String getEmailPayload(String email) {
+        return "{\"email\":\"" + email + "\"}";
+    }
+
+    public String getPasswordPayload(String password) {
+        return "{\"password\":\"" + password + "\"}";
+    }
 }
