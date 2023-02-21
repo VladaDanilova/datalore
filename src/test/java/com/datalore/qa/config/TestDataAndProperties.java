@@ -6,12 +6,16 @@ import org.aeonbits.owner.Config;
 @Config.Sources({"system:env",
         "system:properties",
         "classpath:application.properties",
-        "classpath:testdata.properties"}) // sensitive - DO NOT put into Git/VCS.
+        "classpath:sensitive.properties"}) // sensitive - DO NOT put into Git/VCS.
 public interface TestDataAndProperties extends Config {
 
     String basePath();
     String authPath();
     String userEmail();
     String userPassword();
+    String blogURL();
+    String supportURL();
+    String docURL();
+    String communityURL();
 
 }
