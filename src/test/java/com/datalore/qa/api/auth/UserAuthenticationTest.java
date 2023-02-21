@@ -10,8 +10,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.http.HttpStatus;
 
-public class UserAuthenticationTest extends TestBase {
+/**
+ * @author vdanilova
+ * API tests for datalore auth
+ */
 
+public class UserAuthenticationTest extends TestBase {
+    /**
+     * Check that login page is opened
+     */
     @Test
     public void getLoginPage() {
         given()
@@ -23,6 +30,9 @@ public class UserAuthenticationTest extends TestBase {
                 .body(containsString("<body"), containsString("data-route=\"LOGIN\""));
     }
 
+    /**
+     * Login with correct data
+     */
     @Test
     public void loginWithCorrectData() {
         given()
@@ -37,6 +47,9 @@ public class UserAuthenticationTest extends TestBase {
                 .body(containsString("OK"));
     }
 
+    /**
+     * Try to Login with incorrect data
+     */
     @ParameterizedTest
     @CsvSource({
             "test@email.com, passw0rd123",
@@ -56,6 +69,9 @@ public class UserAuthenticationTest extends TestBase {
                 .body(containsString("INCORRECT"));
     }
 
+    /**
+     * Try to Login without email field (Bad request)
+     */
     @Test
     public void loginWithoutEmail() {
         given()
@@ -67,9 +83,11 @@ public class UserAuthenticationTest extends TestBase {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
-
     }
 
+    /**
+     * Try to Login without password field (Bad request)
+     */
     @Test
     public void loginWithoutPassword() {
         given()
@@ -81,7 +99,6 @@ public class UserAuthenticationTest extends TestBase {
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
-
     }
 
 }

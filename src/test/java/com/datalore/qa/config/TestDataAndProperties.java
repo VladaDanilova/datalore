@@ -9,13 +9,13 @@ import org.aeonbits.owner.Config;
         "classpath:sensitive.properties"}) // sensitive - DO NOT put into Git/VCS.
 public interface TestDataAndProperties extends Config {
 
-    int implicitlyWait();
-    int pageLoadTimeout();
-    int waitTimeout();
-
     String basePath();
     String authPath();
     String userEmail();
     String userPassword();
+    String blogURL();
+    String supportURL();
+    String docURL();
+    String communityURL();
 
 }
