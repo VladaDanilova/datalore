@@ -4,6 +4,7 @@ import com.datalore.qa.ui.pageObjects.LandingPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.junit.Assert.*;
@@ -37,23 +38,20 @@ public class LandingTest extends BaseSeleniumTest {
      */
     @ParameterizedTest
     @CsvSource({
-            "test@email.com, passw0rd123"
+            "test@email.com, passw0rd123",
+            "email~!#$%^*()_@mail.com, ~!#$%^*()_"
     })
-    public void loginWithIncorrectData(String email, String password) {
+    public void loginWithNotExistedData(String email, String password) {
         landingPage.tryLogin(email, password);
         assertTrue(landingPage.getErrorMsg().isDisplayed());
     }
 
     /**
-     * Login with not full data and check that error message in the form is displayed
+     * Login with incorrect data and check that error message in the form is displayed
      */
     @ParameterizedTest
-    @CsvSource({
-            " , passw0rd",
-            "test, ",
-            " , "
-    })
-    public void loginWithNotFullData(String email, String password) {
+    @CsvFileSource(resources = "incorrectDataLogin.csv", numLinesToSkip = 0)
+    public void loginWithIncorrectData(String email, String password) {
         landingPage.tryLogin(email, password);
         assertTrue(landingPage.getErrorInput().isDisplayed());
     }
@@ -82,13 +80,9 @@ public class LandingTest extends BaseSeleniumTest {
      * Create account with weak password
      */
     @ParameterizedTest
-    @CsvSource({
-            "test@email.com, passw0rd",
-            "test@email.com, qwerty",
-            "test@email.com, 1234"
-    })
-    public void tryCreateAccountWithWeakPassword() {
-        landingPage.tryCreateAccount("test@email.com", "test1239");
+    @CsvFileSource(resources = "weakPasswordsSingUp.csv", numLinesToSkip = 0)
+    public void tryCreateAccountWithWeakPassword(String email, String password) {
+        landingPage.tryCreateAccount(email, password);
         assertTrue(landingPage.getErrorInput().isDisplayed());
     }
 
