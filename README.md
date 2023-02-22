@@ -15,7 +15,9 @@ mvn allure:serve
 # Files structure
 This project contains next directories:   
 api - contains api tests, config - contains configuration for all tests, ui - contains ui tests and pageObjects.   
-The most part of configuration data is located in application.properties under resources. **You will also need to add sensitive.properties with personal data for authentication tests.**
+The most part of configuration data is located in application.properties under resources.  
+**You will also need to add sensitive.properties with personal data for authentication tests.**  
+Some test data is located under src/test/resources/com/datalore/qa/ui
 
 # How else might I have done things?
 Tests can be paralleled by using JUnit configuration or Selenium Grid cloud.  
