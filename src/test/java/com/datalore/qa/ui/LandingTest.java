@@ -39,7 +39,8 @@ public class LandingTest extends BaseSeleniumTest {
     @ParameterizedTest
     @CsvSource({
             "test@email.com, passw0rd123",
-            "email~!#$%^*()_@mail.com, ~!#$%^*()_"
+            "test@email.com, пароль746529",
+            "email~!#$%^*()_✨✅@mail.com, ~!#$%^*()_✨✅"
     })
     public void loginWithNotExistedData(String email, String password) {
         landingPage.tryLogin(email, password);
