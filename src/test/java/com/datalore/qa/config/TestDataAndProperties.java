@@ -17,5 +17,7 @@ public interface TestDataAndProperties extends Config {
     String supportURL();
     String docURL();
     String communityURL();
+    String userEmailDifferentCases();
+    String userPasswordDifferentCases();
 
 }

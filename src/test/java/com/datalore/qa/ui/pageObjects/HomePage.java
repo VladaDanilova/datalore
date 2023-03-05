@@ -22,7 +22,7 @@ public class HomePage extends BaseSeleniumPage {
     }
 
     public HomePage openAvatarMenu() {
-        avatarMenu.click();
+        JSclick(avatarMenu);
         return this;
     }
 

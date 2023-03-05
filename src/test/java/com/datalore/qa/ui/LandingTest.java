@@ -1,5 +1,6 @@
 package com.datalore.qa.ui;
 
+import com.datalore.qa.ui.pageObjects.HomePage;
 import com.datalore.qa.ui.pageObjects.LandingPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,14 +17,16 @@ import static org.junit.Assert.*;
 public class LandingTest extends BaseSeleniumTest {
 
     LandingPage landingPage;
+    HomePage homePage;
 
     @BeforeEach
     public void setUpPages() {
        landingPage = new LandingPage();
+       homePage = new HomePage();
     }
 
     /**
-     * Login with correct data and check that user if logged in
+     * Login with correct data and check that user is logged in
      */
     @Test
     public void login() {
@@ -34,17 +37,65 @@ public class LandingTest extends BaseSeleniumTest {
     }
 
     /**
+     * Login with correct data but with different cases and spaces in the email and check that user is logged in
+     */
+    @Test
+    public void loginWithDifCasesSpacesEmail() {
+        assertTrue(landingPage
+                .login("     "+getData().userEmailDifferentCases()+"        ", getData().userPassword())
+                .openAvatarMenu()
+                .getLogoutElement().isDisplayed()); //check Logout is displayed
+    }
+
+    /**
+     * Login with correct data but with different cases in the password and check that user is logged in
+     */
+    @Test
+    public void loginWithDifCasesPassword() {
+        landingPage.tryLogin(getData().userEmail(), getData().userPasswordDifferentCases());
+        assertTrue(landingPage.checkErrorMsg());
+    }
+
+    /**
+     * Login with correct email but incorrect password (with spaces)
+     */
+    @Test
+    public void loginWrongPassword() {
+        landingPage.tryLogin(getData().userEmail(), "    "+getData().userPassword()+"     ");
+        assertTrue(landingPage.checkErrorMsg());
+    }
+
+    /**
+     * Login with correct password but incorrect email
+     */
+    @Test
+    public void loginWrongEmail() {
+        landingPage.tryLogin("test@test.com", getData().userPassword());
+        assertTrue(landingPage.checkErrorMsg());
+    }
+
+    /**
+     * Login with correct password in email field and email in password field
+     */
+    @Test
+    public void loginMixedFields() {
+        landingPage.tryLogin(getData().userPassword(), getData().userEmail());
+        assertTrue(landingPage.getErrorInput().isDisplayed());
+    }
+
+    /**
      * Login with not existed data and check error dialog is displayed
      */
     @ParameterizedTest
     @CsvSource({
             "test@email.com, passw0rd123",
             "test@email.com, пароль746529",
-            "email~!#$%^*()_✨✅@mail.com, ~!#$%^*()_✨✅"
+            "email~!#$%^*()_✨✅@mail.com, ~!#$%^*()_✨✅",
+            "аdmin@test.ru, пароль" //a is not a latin letter
     })
     public void loginWithNotExistedData(String email, String password) {
         landingPage.tryLogin(email, password);
-        assertTrue(landingPage.getErrorMsg().isDisplayed());
+        assertTrue(landingPage.checkErrorMsg());
     }
 
     /**
@@ -54,6 +105,16 @@ public class LandingTest extends BaseSeleniumTest {
     @CsvFileSource(resources = "incorrectDataLogin.csv", numLinesToSkip = 0)
     public void loginWithIncorrectData(String email, String password) {
         landingPage.tryLogin(email, password);
+        assertTrue(landingPage.getErrorInput().isDisplayed());
+    }
+
+    /**
+     * Login with incorrect email and check that error message in the form is displayed
+     */
+    @ParameterizedTest
+    @CsvFileSource(resources = "incorrectEmails.csv", numLinesToSkip = 0)
+    public void loginWithIncorrectData(String email) {
+        landingPage.tryLogin(email, getData().userPassword());
         assertTrue(landingPage.getErrorInput().isDisplayed());
     }
 
@@ -93,12 +154,22 @@ public class LandingTest extends BaseSeleniumTest {
      */
     @Test
     public void tryCreateExistingAccount() {
-        landingPage.tryCreateAccount(getData().userEmail(), getData().userPassword());
-        assertTrue(landingPage.getErrorMsg().isDisplayed());
+        landingPage.tryCreateAccount("     "+getData().userEmailDifferentCases()+"        ", getData().userPassword());
+        assertTrue(landingPage.checkErrorMsg());
     }
 
     /**
-     * Check that user can go to the creat form and back to the log in form
+     * Create account with incorrect data and check that error message in the form is displayed
+     */
+    @ParameterizedTest
+    @CsvFileSource(resources = "incorrectDataCreateAccount.csv", numLinesToSkip = 0)
+    public void tryCreateAccountWithIncorrectData(String email, String password) {
+        landingPage.tryCreateAccount(email, password);
+        assertTrue(landingPage.getErrorInput().isDisplayed());
+    }
+
+    /**
+     * Check that user can go to the creatе form and back to the log in form
      */
     @Test
     public void goBackToLogin() {

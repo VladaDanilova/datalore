@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
  * Page Object of Datalore's Login page
@@ -110,6 +111,11 @@ public class LandingPage extends BaseSeleniumPage {
         fillEmail(email);
         fillPassword(password);
         createBtn.click();
+    }
+
+    public boolean checkErrorMsg() {
+        getWait().until(ExpectedConditions.visibilityOf(errorMsg));
+        return errorMsg.isDisplayed();
     }
 
 }
