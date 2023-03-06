@@ -1,6 +1,5 @@
 package com.datalore.qa.ui;
 
-import com.datalore.qa.ui.pageObjects.HomePage;
 import com.datalore.qa.ui.pageObjects.LandingPage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,12 +16,10 @@ import static org.junit.Assert.*;
 public class LandingTest extends BaseSeleniumTest {
 
     LandingPage landingPage;
-    HomePage homePage;
 
     @BeforeEach
     public void setUpPages() {
        landingPage = new LandingPage();
-       homePage = new HomePage();
     }
 
     /**
