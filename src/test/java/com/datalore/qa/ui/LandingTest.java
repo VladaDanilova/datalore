@@ -48,12 +48,12 @@ public class LandingTest extends BaseSeleniumTest {
     }
 
     /**
-     * Login with correct data but with different cases in the password and check that user is logged in
+     * Login with correct email but with different cases in the password
      */
     @Test
     public void loginWithDifCasesPassword() {
         landingPage.tryLogin(getData().userEmail(), getData().userPasswordDifferentCases());
-        assertTrue(landingPage.checkErrorMsg());
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
     }
 
     /**
@@ -62,7 +62,7 @@ public class LandingTest extends BaseSeleniumTest {
     @Test
     public void loginWrongPassword() {
         landingPage.tryLogin(getData().userEmail(), "    "+getData().userPassword()+"     ");
-        assertTrue(landingPage.checkErrorMsg());
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
     }
 
     /**
@@ -71,7 +71,7 @@ public class LandingTest extends BaseSeleniumTest {
     @Test
     public void loginWrongEmail() {
         landingPage.tryLogin("test@test.com", getData().userPassword());
-        assertTrue(landingPage.checkErrorMsg());
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
     }
 
     /**
@@ -80,7 +80,7 @@ public class LandingTest extends BaseSeleniumTest {
     @Test
     public void loginMixedFields() {
         landingPage.tryLogin(getData().userPassword(), getData().userEmail());
-        assertTrue(landingPage.getErrorInput().isDisplayed());
+        assertTrue(landingPage.checkErrorInput().contains("Email is invalid"));
     }
 
     /**
@@ -95,7 +95,7 @@ public class LandingTest extends BaseSeleniumTest {
     })
     public void loginWithNotExistedData(String email, String password) {
         landingPage.tryLogin(email, password);
-        assertTrue(landingPage.checkErrorMsg());
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
     }
 
     /**
@@ -115,7 +115,7 @@ public class LandingTest extends BaseSeleniumTest {
     @CsvFileSource(resources = "incorrectEmails.csv", numLinesToSkip = 0)
     public void loginWithIncorrectData(String email) {
         landingPage.tryLogin(email, getData().userPassword());
-        assertTrue(landingPage.getErrorInput().isDisplayed());
+        assertTrue(landingPage.checkErrorInput().contains("Email is invalid"));
     }
 
     /**
@@ -145,7 +145,7 @@ public class LandingTest extends BaseSeleniumTest {
     @CsvFileSource(resources = "weakPasswordsSingUp.csv", numLinesToSkip = 0)
     public void tryCreateAccountWithWeakPassword(String email, String password) {
         landingPage.tryCreateAccount(email, password);
-        assertTrue(landingPage.getErrorInput().isDisplayed());
+        assertTrue(landingPage.checkErrorInput().contains("Password strength"));
     }
 
     /**
@@ -155,7 +155,7 @@ public class LandingTest extends BaseSeleniumTest {
     @Test
     public void tryCreateExistingAccount() {
         landingPage.tryCreateAccount("     "+getData().userEmailDifferentCases()+"        ", getData().userPassword());
-        assertTrue(landingPage.checkErrorMsg());
+        assertTrue(landingPage.checkErrorMsg().contains("User with this email is already registered."));
     }
 
     /**
@@ -188,6 +188,26 @@ public class LandingTest extends BaseSeleniumTest {
         assertTrue(landingPage.getCommunityLink().getAttribute("href").contains(getData().communityURL()));
         assertTrue(landingPage.getSupportLink().getAttribute("href").contains(getData().supportURL()));
         assertTrue(landingPage.getDocumentationLink().getAttribute("href").contains(getData().docURL()));
+    }
+
+    /**
+     * Check header link: open create account form and then main page by clicking header
+     */
+    @Test
+    public void checkHeaderLink() {
+        landingPage.clickCreateAccount();
+        landingPage.clickHeader();
+        assertTrue(landingPage.getLoginBtn().isDisplayed()); // log in form should be opened
+    }
+
+    /**
+     * Check all titles are displayed
+     */
+    @Test
+    public void checkTitles() {
+        assertTrue(landingPage.getLandingTitle().getText().contains("Datalore\nis a collaborative\ndata science\nplatform"));
+        assertTrue(landingPage.getLandingSubtitle().getText().contains("Get support"));
+        assertTrue(landingPage.getDataloreHeader().isDisplayed());
     }
 
 }

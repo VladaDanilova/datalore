@@ -52,10 +52,15 @@ public class UserAuthenticationTest extends TestBase {
      */
     @ParameterizedTest
     @CsvSource({
-            "test@email.com, passw0rd123",
-            " , passw0rd",
-            "test@email.com, ",
-            " , "
+            "тест@почта.ру,пароль",
+            ",passw0rd",
+            "test,",
+            ",",
+            "LoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanusLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdol, orsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanciduntLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneansLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneanLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAeneananLoremipsumdolorsitametconsectetueradipiscingelitAeneancommodoligulaegetdolorAenean",
+            "test @test.com,passw0rd",
+            " @   .com,passw0rd",
+            "test@email.com,passw0rd123",
+            "test@email.com,"
     })
     public void loginWithIncorrectData(String email, String password) {
         given()
