@@ -23,7 +23,7 @@ public class LandingTest extends BaseSeleniumTest {
     }
 
     /**
-     * Login with correct data and check that user if logged in
+     * Login with correct data and check that user is logged in
      */
     @Test
     public void login() {
@@ -34,17 +34,65 @@ public class LandingTest extends BaseSeleniumTest {
     }
 
     /**
+     * Login with correct data but with different cases and spaces in the email and check that user is logged in
+     */
+    @Test
+    public void loginWithDifCasesSpacesEmail() {
+        assertTrue(landingPage
+                .login("     "+getData().userEmailDifferentCases()+"        ", getData().userPassword())
+                .openAvatarMenu()
+                .getLogoutElement().isDisplayed()); //check Logout is displayed
+    }
+
+    /**
+     * Login with correct email but with different cases in the password
+     */
+    @Test
+    public void loginWithDifCasesPassword() {
+        landingPage.tryLogin(getData().userEmail(), getData().userPasswordDifferentCases());
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
+    }
+
+    /**
+     * Login with correct email but incorrect password (with spaces)
+     */
+    @Test
+    public void loginWrongPassword() {
+        landingPage.tryLogin(getData().userEmail(), "    "+getData().userPassword()+"     ");
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
+    }
+
+    /**
+     * Login with correct password but incorrect email
+     */
+    @Test
+    public void loginWrongEmail() {
+        landingPage.tryLogin("test@test.com", getData().userPassword());
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
+    }
+
+    /**
+     * Login with correct password in email field and email in password field
+     */
+    @Test
+    public void loginMixedFields() {
+        landingPage.tryLogin(getData().userPassword(), getData().userEmail());
+        assertTrue(landingPage.checkErrorInput().contains("Email is invalid"));
+    }
+
+    /**
      * Login with not existed data and check error dialog is displayed
      */
     @ParameterizedTest
     @CsvSource({
             "test@email.com, passw0rd123",
             "test@email.com, пароль746529",
-            "email~!#$%^*()_✨✅@mail.com, ~!#$%^*()_✨✅"
+            "email~!#$%^*()_✨✅@mail.com, ~!#$%^*()_✨✅",
+            "аdmin@test.ru, пароль" //a is not a latin letter
     })
     public void loginWithNotExistedData(String email, String password) {
         landingPage.tryLogin(email, password);
-        assertTrue(landingPage.getErrorMsg().isDisplayed());
+        assertTrue(landingPage.checkErrorMsg().contains("One or both of your email/password was incorrect"));
     }
 
     /**
@@ -55,6 +103,16 @@ public class LandingTest extends BaseSeleniumTest {
     public void loginWithIncorrectData(String email, String password) {
         landingPage.tryLogin(email, password);
         assertTrue(landingPage.getErrorInput().isDisplayed());
+    }
+
+    /**
+     * Login with incorrect email and check that error message in the form is displayed
+     */
+    @ParameterizedTest
+    @CsvFileSource(resources = "incorrectEmails.csv", numLinesToSkip = 0)
+    public void loginWithIncorrectData(String email) {
+        landingPage.tryLogin(email, getData().userPassword());
+        assertTrue(landingPage.checkErrorInput().contains("Email is invalid"));
     }
 
     /**
@@ -84,7 +142,7 @@ public class LandingTest extends BaseSeleniumTest {
     @CsvFileSource(resources = "weakPasswordsSingUp.csv", numLinesToSkip = 0)
     public void tryCreateAccountWithWeakPassword(String email, String password) {
         landingPage.tryCreateAccount(email, password);
-        assertTrue(landingPage.getErrorInput().isDisplayed());
+        assertTrue(landingPage.checkErrorInput().contains("Password strength"));
     }
 
     /**
@@ -93,12 +151,22 @@ public class LandingTest extends BaseSeleniumTest {
      */
     @Test
     public void tryCreateExistingAccount() {
-        landingPage.tryCreateAccount(getData().userEmail(), getData().userPassword());
-        assertTrue(landingPage.getErrorMsg().isDisplayed());
+        landingPage.tryCreateAccount("     "+getData().userEmailDifferentCases()+"        ", getData().userPassword());
+        assertTrue(landingPage.checkErrorMsg().contains("User with this email is already registered."));
     }
 
     /**
-     * Check that user can go to the creat form and back to the log in form
+     * Create account with incorrect data and check that error message in the form is displayed
+     */
+    @ParameterizedTest
+    @CsvFileSource(resources = "incorrectDataCreateAccount.csv", numLinesToSkip = 0)
+    public void tryCreateAccountWithIncorrectData(String email, String password) {
+        landingPage.tryCreateAccount(email, password);
+        assertTrue(landingPage.getErrorInput().isDisplayed());
+    }
+
+    /**
+     * Check that user can go to the creatе form and back to the log in form
      */
     @Test
     public void goBackToLogin() {
@@ -117,6 +185,26 @@ public class LandingTest extends BaseSeleniumTest {
         assertTrue(landingPage.getCommunityLink().getAttribute("href").contains(getData().communityURL()));
         assertTrue(landingPage.getSupportLink().getAttribute("href").contains(getData().supportURL()));
         assertTrue(landingPage.getDocumentationLink().getAttribute("href").contains(getData().docURL()));
+    }
+
+    /**
+     * Check header link: open create account form and then main page by clicking header
+     */
+    @Test
+    public void checkHeaderLink() {
+        landingPage.clickCreateAccount();
+        landingPage.clickHeader();
+        assertTrue(landingPage.getLoginBtn().isDisplayed()); // log in form should be opened
+    }
+
+    /**
+     * Check all titles are displayed
+     */
+    @Test
+    public void checkTitles() {
+        assertTrue(landingPage.getLandingTitle().getText().contains("Datalore\nis a collaborative\ndata science\nplatform"));
+        assertTrue(landingPage.getLandingSubtitle().getText().contains("Get support"));
+        assertTrue(landingPage.getDataloreHeader().isDisplayed());
     }
 
 }

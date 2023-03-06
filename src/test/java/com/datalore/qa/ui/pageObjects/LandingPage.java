@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
  * Page Object of Datalore's Login page
@@ -59,6 +60,21 @@ public class LandingPage extends BaseSeleniumPage {
     @FindBy(xpath = "//div[@data-test='error-message']")
     private WebElement errorInput;
 
+    @FindBy(xpath = "//a[text()='Datalore']")
+    private WebElement dataloreHeader;
+
+    @FindBy(xpath = "//h1[text()='Log in']")
+    private WebElement logInHeader;
+
+    @FindBy(xpath = "//h1[text()='Sign up']")
+    private WebElement signUpHeader;
+
+    @FindBy(xpath = "//h1[contains(@class, ' landing__title')]")
+    private WebElement landingTitle;
+
+    @FindBy(xpath = "//h3[contains(@class, ' landing__subtitle')]")
+    private WebElement landingSubtitle;
+
     public LandingPage() {
         driver.get(getData().basePath());
         PageFactory.initElements(driver,this);
@@ -110,6 +126,19 @@ public class LandingPage extends BaseSeleniumPage {
         fillEmail(email);
         fillPassword(password);
         createBtn.click();
+    }
+
+    public String checkErrorMsg() {
+        getWait().until(ExpectedConditions.visibilityOf(errorMsg));
+        return errorMsg.getText();
+    }
+
+    public void clickHeader() {
+        dataloreHeader.click();
+    }
+
+    public String checkErrorInput() {
+        return errorInput.getText();
     }
 
 }

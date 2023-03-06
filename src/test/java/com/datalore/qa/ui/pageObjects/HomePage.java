@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 /**
  * Page Object of Home page
@@ -22,7 +23,8 @@ public class HomePage extends BaseSeleniumPage {
     }
 
     public HomePage openAvatarMenu() {
-        avatarMenu.click();
+        getWait().until(ExpectedConditions.elementToBeClickable(avatarMenu));
+        JSclick(avatarMenu);
         return this;
     }
 
